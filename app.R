@@ -94,6 +94,15 @@ CONFIG <- list(
     "South Asia"          = "SAS"
   ),
 
+  # IMF DataMapper concept codes — used when snap_year < year_max (historical fetch)
+  imf_concepts = list(
+    imf_gdp            = "NGDPD",
+    gdp_ppp            = "PPPGDP",
+    gdp_per_capita     = "NGDPDPC",
+    gdp_per_capita_ppp = "PPPPC",
+    gdp_growth         = "NGDP_RPCH"
+  ),
+
   # Countries assigned to each region code (used for filter)
   # <<MOD-REGION-MAP>> Add countries or reorganize groupings here
   region_map = c(
@@ -135,6 +144,38 @@ CONFIG <- list(
 # =============================================================================
 # HELPER FUNCTIONS
 # =============================================================================
+
+iso3_to_name <- function(iso3_vec) {
+  lookup <- c(
+    USA="United States", CHN="China", JPN="Japan", DEU="Germany",
+    GBR="United Kingdom", FRA="France", IND="India", ITA="Italy",
+    CAN="Canada", KOR="South Korea", RUS="Russia", AUS="Australia",
+    BRA="Brazil", ESP="Spain", MEX="Mexico", IDN="Indonesia",
+    NLD="Netherlands", SAU="Saudi Arabia", TUR="Turkey", CHE="Switzerland",
+    TWN="Taiwan", ARG="Argentina", SWE="Sweden", POL="Poland",
+    BEL="Belgium", THA="Thailand", NOR="Norway", AUT="Austria",
+    ARE="United Arab Emirates", NGA="Nigeria", SGP="Singapore",
+    MYS="Malaysia", ZAF="South Africa", DNK="Denmark", PHL="Philippines",
+    EGY="Egypt", VNM="Vietnam", BGD="Bangladesh", FIN="Finland",
+    CHL="Chile", IRN="Iran", PAK="Pakistan", COL="Colombia",
+    PRT="Portugal", GRC="Greece", NZL="New Zealand", IRQ="Iraq",
+    PER="Peru", ISR="Israel", CZE="Czechia", LKA="Sri Lanka"
+  )
+  ifelse(iso3_vec %in% names(lookup), lookup[iso3_vec], iso3_vec)
+}
+
+fetch_imf_latest <- function(concept, base_url = CONFIG$imf_api_base) {
+  url <- paste0(base_url, "/", concept)
+  tryCatch({
+    res  <- fromJSON(url)
+    vals <- res$values[[concept]]
+    do.call(rbind, lapply(names(vals), function(iso) {
+      country_vals <- unlist(vals[[iso]])
+      data.frame(ISO3=iso, Year=as.integer(names(country_vals)),
+                 Value=as.numeric(country_vals), stringsAsFactors=FALSE)
+    })) %>% as_tibble()
+  }, error = function(e) { message("IMF API error: ", e$message); NULL })
+}
 
 # Safe Wikipedia table fetch with retry and caching
 fetch_wiki_table <- function(url, table_index = 1, ua = CONFIG$user_agent) {
@@ -310,19 +351,32 @@ ui <- page_navbar(
                               sapply(CONFIG$wiki_sources, `[[`, "label")),
           selected = "imf_gdp"
         ),
-        tags$div(class="mod-hint", "Source: Wikipedia (scraped live)"),
+        tags$div(class="mod-hint", "Latest year → Wikipedia. Past years → IMF API."),
         hr(),
+        sliderInput("snap_year", "Data Year",
+          min = CONFIG$year_min, max = CONFIG$year_max,
+          value = CONFIG$year_max, step = 1, sep = ""
+        ),
         selectInput("snap_source_org", "Reporting Organization",
           choices  = c("All", "IMF", "World Bank", "UN", "CIA"),
           selected = "IMF"
         ),
-        # <<MOD-WIDGET-REGION>> Add regions in CONFIG$regions above
-        selectInput("snap_region", "Region Filter",
+        # <<MOD-WIDGET-REGION>> Supports multiple selections; "All Regions" clears filter
+        selectizeInput("snap_region", "Region Filter",
           choices  = CONFIG$regions,
-          selected = "all"
+          selected = "all",
+          multiple = TRUE,
+          options  = list(placeholder = "All regions")
+        ),
+        # <<MOD-WIDGET-COUNTRIES>> Populated after first fetch
+        selectizeInput("snap_countries", "Country Filter",
+          choices  = NULL,
+          selected = NULL,
+          multiple = TRUE,
+          options  = list(placeholder = "All countries (no filter)", maxItems = 100)
         ),
         # <<MOD-WIDGET-TOPN>> Default and range
-        sliderInput("snap_top_n", "Top N Countries",
+        sliderInput("snap_top_n", "Top N Countries (bar chart)",
           min = 5, max = 50, value = CONFIG$top_n_default, step = 5
         ),
         checkboxInput("snap_log_scale", "Log scale (Y axis)", FALSE),
@@ -390,6 +444,7 @@ ui <- page_navbar(
                               sapply(CONFIG$wiki_sources, `[[`, "label")),
           selected = c("imf_gdp", "gdp_ppp")
         ),
+        checkboxInput("cmp_log_scale", "Log scale (Y axis)", FALSE),
         hr(),
         actionButton("cmp_fetch", "🔄 Load Comparison", class = "btn-primary w-100"),
         br(), br(),
@@ -421,8 +476,9 @@ ui <- page_navbar(
         sliderInput("bub_top_n", "Countries to Display",
           min = 10, max = 80, value = 40, step = 5
         ),
-        selectInput("bub_region", "Region Filter",
-          choices = CONFIG$regions, selected = "all"
+        selectizeInput("bub_region", "Region Filter",
+          choices = CONFIG$regions, selected = "all",
+          multiple = TRUE, options = list(placeholder = "All regions")
         ),
         checkboxInput("bub_label", "Show Country Labels", TRUE),
         checkboxInput("bub_log_x", "Log X axis", TRUE),
@@ -451,10 +507,12 @@ ui <- page_navbar(
         sliderInput("grw_top_n", "Top N Fastest-Growing",
           min = 5, max = 30, value = 15, step = 5
         ),
-        selectInput("grw_region", "Region Filter",
-          choices = CONFIG$regions, selected = "all"
+        selectizeInput("grw_region", "Region Filter",
+          choices = CONFIG$regions, selected = "all",
+          multiple = TRUE, options = list(placeholder = "All regions")
         ),
         checkboxInput("grw_bottom", "Show Slowest-Growing Instead", FALSE),
+        checkboxInput("grw_log_scale", "Log scale (Y axis)", FALSE),
         hr(),
         actionButton("grw_fetch", "🔄 Load Growth Data", class = "btn-primary w-100"),
         br(), br(),
@@ -616,44 +674,71 @@ server <- function(input, output, session) {
   }
 
   # ---- SNAPSHOT reactive data -----------------------------------------------
-  snap_data <- reactiveVal(NULL)
+  # snap_raw stores the fetched, org-filtered data; snap_data applies region/country filters
+  snap_raw <- reactiveVal(NULL)
+
+  snap_data <- reactive({
+    df <- snap_raw(); req(df)
+    regions   <- input$snap_region
+    countries <- input$snap_countries
+    if (!("all" %in% regions) && length(regions) > 0)
+      df <- df %>% filter(Region %in% regions)
+    if (length(countries) > 0)
+      df <- df %>% filter(Country %in% countries)
+    df
+  })
 
   observeEvent(input$snap_fetch, {
-    shinyjs_update_banner <- function(msg, color = "#0077b6") {
-      shinyjs::runjs(sprintf(
-        "document.getElementById('status_banner').innerHTML='%s';
-         document.getElementById('status_banner').style.background='%s';",
-        msg, color
-      ))
+    yr <- input$snap_year
+
+    if (yr < CONFIG$year_max) {
+      # Historical fetch via IMF API
+      concept <- CONFIG$imf_concepts[[input$snap_source]]
+      if (is.null(concept)) {
+        showNotification("⚠️ Historical data not available for this measure.", type = "warning")
+        return()
+      }
+      showNotification(paste0("⏳ Fetching IMF data for ", yr, "…"), id = "fetching", duration = NULL)
+      imf_raw <- fetch_imf_latest(concept)
+      removeNotification("fetching")
+      if (is.null(imf_raw)) {
+        showNotification("❌ IMF API fetch failed.", type = "error"); return()
+      }
+      df <- imf_raw %>%
+        filter(Year == yr) %>%
+        mutate(
+          Country    = iso3_to_name(ISO3),
+          Region     = assign_region(Country),
+          source_org = "IMF",
+          source_key = input$snap_source,
+          value      = Value
+        ) %>%
+        filter(!is.na(value)) %>%
+        select(Country, Region, source_org, value, source_key)
+    } else {
+      # Latest data via Wikipedia
+      showNotification("⏳ Fetching Wikipedia data…", id = "fetching", duration = NULL)
+      src <- CONFIG$wiki_sources[[input$snap_source]]
+      df  <- cached_fetch(input$snap_source, src$url, src$table_index)
+      removeNotification("fetching")
+      if (is.null(df)) {
+        showNotification("❌ Failed to fetch data. Check your internet connection.", type = "error")
+        return()
+      }
+      if (input$snap_source_org != "All")
+        df <- df %>% filter(str_detect(source_org, fixed(input$snap_source_org, ignore_case = TRUE)))
     }
 
-    showNotification("⏳ Fetching Wikipedia data…", id = "fetching", duration = NULL)
-    src   <- CONFIG$wiki_sources[[input$snap_source]]
-    df    <- cached_fetch(input$snap_source, src$url, src$table_index)
-    removeNotification("fetching")
+    snap_raw(df)
+    showNotification(paste0("✅ Data loaded (", yr, ")!"), type = "message", duration = 3)
 
-    if (is.null(df)) {
-      showNotification("❌ Failed to fetch data. Check your internet connection.", type = "error")
-      return()
-    }
-
-    # Apply filters
-    if (input$snap_source_org != "All") {
-      df <- df %>% filter(str_detect(source_org, fixed(input$snap_source_org, ignore_case = TRUE)))
-    }
-    if (input$snap_region != "all") {
-      df <- df %>% filter(Region == input$snap_region)
-    }
-
-    snap_data(df)
-    showNotification("✅ Data loaded!", type = "message", duration = 3)
-
-    # Populate country selector for Compare tab
+    all_countries <- sort(unique(df$Country))
+    updateSelectizeInput(session, "snap_countries",
+      choices = all_countries, selected = character(0), server = TRUE)
     updateSelectizeInput(session, "cmp_countries",
-      choices  = sort(unique(df$Country)),
+      choices  = all_countries,
       selected = c("United States", "China", "Germany", "India", "Japan"),
-      server   = TRUE
-    )
+      server   = TRUE)
   })
 
   # ---- Value boxes ----------------------------------------------------------
@@ -823,7 +908,10 @@ server <- function(input, output, session) {
                     measure_short, ": $", round(value, 1), "B")
     )) +
       geom_col(position = "dodge", width = 0.7) +
-      scale_y_continuous(labels = function(x) paste0("$", x / 1e3, "B")) +
+      scale_y_continuous(
+        labels = function(x) paste0("$", x / 1e3, "B"),
+        trans  = if (input$cmp_log_scale) "log10" else "identity"
+      ) +
       scale_fill_brewer(palette = "Set2") +
       labs(x = NULL, y = NULL, fill = "Measure") +
       theme_minimal(base_family = "IBM Plex Sans") +
@@ -883,7 +971,8 @@ server <- function(input, output, session) {
       mutate(Region = assign_region(Country)) %>%
       filter(!is.na(gdp_nom), !is.na(gdp_ppp), !is.na(gdp_pc))
 
-    if (input$bub_region != "all") joined <- filter(joined, Region == input$bub_region)
+    if (!("all" %in% input$bub_region) && length(input$bub_region) > 0)
+      joined <- filter(joined, Region %in% input$bub_region)
     joined <- joined %>% arrange(desc(gdp_nom)) %>% slice_head(n = input$bub_top_n)
     bub_data(joined)
   })
@@ -946,7 +1035,8 @@ server <- function(input, output, session) {
       group_by(Country, Region) %>%
       summarise(growth = mean(value, na.rm = TRUE), .groups = "drop")
 
-    if (input$grw_region != "all") df <- filter(df, Region == input$grw_region)
+    if (!("all" %in% input$grw_region) && length(input$grw_region) > 0)
+      df <- filter(df, Region %in% input$grw_region)
     df <- if (input$grw_bottom)
             df %>% arrange(growth)  %>% slice_head(n = input$grw_top_n)
           else
@@ -966,7 +1056,10 @@ server <- function(input, output, session) {
       geom_col(width = 0.72) +
       coord_flip() +
       scale_fill_manual(values = c(Positive = "#2dc653", Negative = "#e63946"), guide = "none") +
-      scale_y_continuous(labels = function(x) paste0(x, "%")) +
+      scale_y_continuous(
+        labels = function(x) paste0(x, "%"),
+        trans  = if (input$grw_log_scale) "log10" else "identity"
+      ) +
       geom_hline(yintercept = 0, color = "#a8b8cc", linewidth = .4) +
       labs(x = NULL, y = "Real GDP Growth Rate (%)") +
       theme_minimal(base_family = "IBM Plex Sans") +
