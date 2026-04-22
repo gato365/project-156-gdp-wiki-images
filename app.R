@@ -233,6 +233,12 @@ parse_gdp_table <- function(raw_df, source_key) {
 }
 
 # =============================================================================
+# HELPER FUNCTIONS
+# =============================================================================
+
+icon_text <- function(emoji, text) tags$span(emoji, " ", text)
+
+# =============================================================================
 # UI
 # =============================================================================
 
@@ -320,13 +326,13 @@ ui <- page_navbar(
       layout_columns(
         col_widths = c(3, 3, 3, 3),
         value_box(title = "Countries Loaded", value = textOutput("vb_n_countries"),
-                  showcase = bsicons::bs_icon("globe2"), theme = "primary"),
+                  showcase = icon("globe"), theme = "primary"),
         value_box(title = "Largest Economy", value = textOutput("vb_top_country"),
-                  showcase = bsicons::bs_icon("trophy"), theme = "success"),
+                  showcase = icon("trophy"), theme = "success"),
         value_box(title = "Top GDP Value",  value = textOutput("vb_top_gdp"),
-                  showcase = bsicons::bs_icon("currency-dollar"), theme = "info"),
+                  showcase = icon("dollar-sign"), theme = "info"),
         value_box(title = "Data Source",    value = textOutput("vb_source_label"),
-                  showcase = bsicons::bs_icon("wikipedia"), theme = "secondary")
+                  showcase = icon("book"), theme = "secondary")
       ),
       br(),
       layout_columns(
@@ -587,8 +593,6 @@ mod_section <- function(title, description, code_example = NULL) {
     )
   )
 }
-
-icon_text <- function(emoji, text) tags$span(emoji, " ", text)
 
 # =============================================================================
 # SERVER
