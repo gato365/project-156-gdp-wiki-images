@@ -238,6 +238,19 @@ parse_gdp_table <- function(raw_df, source_key) {
 
 icon_text <- function(emoji, text) tags$span(emoji, " ", text)
 
+mod_section <- function(title, description, code_example = NULL) {
+  tagList(
+    tags$div(
+      style = "background:#111827; border:1px solid #1e2d3d; border-radius:10px; padding:20px; margin-bottom:18px;",
+      tags$h4(title, style = "color:#0077b6; margin-top:0;"),
+      tags$p(description, style = "color:#a8b8cc; line-height:1.65;"),
+      if (!is.null(code_example))
+        tags$pre(style = "background:#0d1b2a; border:1px solid #1e2d3d; border-radius:6px; padding:14px; color:#7dd3fc; font-size:.78rem; overflow-x:auto;",
+                 code_example)
+    )
+  )
+}
+
 # =============================================================================
 # UI
 # =============================================================================
@@ -256,8 +269,7 @@ ui <- page_navbar(
     success    = "#2dc653",
     font_scale = 0.95
   ),
-  bg        = "#0a0e1a",
-  fg        = "#e8eaf0",
+  navbar_options = navbar_options(bg = "#0a0e1a", fg = "#e8eaf0"),
   fillable  = TRUE,
 
   # ---- CUSTOM CSS -----------------------------------------------------------
@@ -579,20 +591,6 @@ fetch_worldbank <- function(indicator = "NY.GDP.MKTP.CD",
     )
   )
 )
-
-# Helper to render a documentation section card
-mod_section <- function(title, description, code_example = NULL) {
-  tagList(
-    tags$div(
-      style = "background:#111827; border:1px solid #1e2d3d; border-radius:10px; padding:20px; margin-bottom:18px;",
-      tags$h4(title, style = "color:#0077b6; margin-top:0;"),
-      tags$p(description, style = "color:#a8b8cc; line-height:1.65;"),
-      if (!is.null(code_example))
-        tags$pre(style = "background:#0d1b2a; border:1px solid #1e2d3d; border-radius:6px; padding:14px; color:#7dd3fc; font-size:.78rem; overflow-x:auto;",
-                 code_example)
-    )
-  )
-}
 
 # =============================================================================
 # SERVER
