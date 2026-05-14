@@ -1,0 +1,145 @@
+country,continent,independence_year,colonial_power,notes,pre_gapminder,during_gapminder
+Algeria,Africa,1962,France,Algerian War,FALSE,TRUE
+Angola,Africa,1975,Portugal,Angolan War of Independence,FALSE,TRUE
+Benin,Africa,1960,France,Formerly Dahomey,FALSE,TRUE
+Botswana,Africa,1966,United Kingdom,Formerly Bechuanaland,FALSE,TRUE
+Burkina Faso,Africa,1960,France,Formerly Upper Volta,FALSE,TRUE
+Burundi,Africa,1962,Belgium,Formerly Ruanda-Urundi,FALSE,TRUE
+Cameroon,Africa,1960,France,French Cameroon,FALSE,TRUE
+Central African Republic,Africa,1960,France,,FALSE,TRUE
+Chad,Africa,1960,France,,FALSE,TRUE
+Comoros,Africa,1975,France,,FALSE,TRUE
+"Congo, Dem. Rep.",Africa,1960,Belgium,Formerly Belgian Congo,FALSE,TRUE
+"Congo, Rep.",Africa,1960,France,Formerly French Congo,FALSE,TRUE
+Cote d'Ivoire,Africa,1960,France,Ivory Coast,FALSE,TRUE
+Djibouti,Africa,1977,France,Formerly TFAI,FALSE,TRUE
+Egypt,Africa,1922,United Kingdom,1919 revolution; republic 1953,TRUE,FALSE
+Equatorial Guinea,Africa,1968,Spain,,FALSE,TRUE
+Eritrea,Africa,1993,Ethiopia,Eritrean War of Independence,FALSE,TRUE
+Ethiopia,Africa,1941,Italy,Restored after Italian occupation,TRUE,FALSE
+Gabon,Africa,1960,France,,FALSE,TRUE
+Gambia,Africa,1965,United Kingdom,,FALSE,TRUE
+Ghana,Africa,1957,United Kingdom,First sub-Saharan independence,FALSE,TRUE
+Guinea,Africa,1958,France,Only 'No' to De Gaulle,FALSE,TRUE
+Guinea-Bissau,Africa,1974,Portugal,,FALSE,TRUE
+Kenya,Africa,1963,United Kingdom,After Mau Mau rebellion,FALSE,TRUE
+Lesotho,Africa,1966,United Kingdom,Formerly Basutoland,FALSE,TRUE
+Liberia,Africa,1847,None,Founded by freed slaves,TRUE,FALSE
+Libya,Africa,1951,Italy/UK,First African UN member,TRUE,FALSE
+Madagascar,Africa,1960,France,,FALSE,TRUE
+Malawi,Africa,1964,United Kingdom,Formerly Nyasaland,FALSE,TRUE
+Mali,Africa,1960,France,,FALSE,TRUE
+Mauritania,Africa,1960,France,,FALSE,TRUE
+Mauritius,Africa,1968,United Kingdom,,FALSE,TRUE
+Morocco,Africa,1956,France/Spain,,FALSE,TRUE
+Mozambique,Africa,1975,Portugal,Mozambican War of Independence,FALSE,TRUE
+Namibia,Africa,1990,South Africa,South African Border War,FALSE,TRUE
+Niger,Africa,1960,France,,FALSE,TRUE
+Nigeria,Africa,1960,United Kingdom,,FALSE,TRUE
+Reunion,Africa,,France,Overseas territory — no independence,TRUE,FALSE
+Rwanda,Africa,1962,Belgium,Rwandan Revolution,FALSE,TRUE
+Sao Tome and Principe,Africa,1975,Portugal,,FALSE,TRUE
+Senegal,Africa,1960,France,,FALSE,TRUE
+Sierra Leone,Africa,1961,United Kingdom,,FALSE,TRUE
+Somalia,Africa,1960,UK/Italy,Union of British/Italian Somaliland,FALSE,TRUE
+South Africa,Africa,1910,United Kingdom,Union; republic 1961; majority rule 1994,TRUE,FALSE
+Sudan,Africa,1956,UK/Egypt,Anglo-Egyptian Sudan,FALSE,TRUE
+Swaziland,Africa,1968,United Kingdom,,FALSE,TRUE
+Tanzania,Africa,1961,United Kingdom,Tanganyika + Zanzibar 1964,FALSE,TRUE
+Togo,Africa,1960,France,,FALSE,TRUE
+Tunisia,Africa,1956,France,,FALSE,TRUE
+Uganda,Africa,1962,United Kingdom,,FALSE,TRUE
+Zambia,Africa,1964,United Kingdom,Formerly Northern Rhodesia,FALSE,TRUE
+Zimbabwe,Africa,1980,United Kingdom,UDI 1965; majority rule 1980,FALSE,TRUE
+Argentina,Americas,1816,Spain,,TRUE,FALSE
+Bolivia,Americas,1825,Spain,,TRUE,FALSE
+Brazil,Americas,1822,Portugal,,TRUE,FALSE
+Canada,Americas,1867,United Kingdom,Dominion; full sovereignty 1931,TRUE,FALSE
+Chile,Americas,1818,Spain,,TRUE,FALSE
+Colombia,Americas,1810,Spain,,TRUE,FALSE
+Costa Rica,Americas,1821,Spain,,TRUE,FALSE
+Cuba,Americas,1898,Spain,US influence until 1959,TRUE,FALSE
+Dominican Republic,Americas,1844,Haiti,,TRUE,FALSE
+Ecuador,Americas,1822,Spain,,TRUE,FALSE
+El Salvador,Americas,1821,Spain,,TRUE,FALSE
+Guatemala,Americas,1821,Spain,,TRUE,FALSE
+Haiti,Americas,1804,France,First Black republic,TRUE,FALSE
+Honduras,Americas,1821,Spain,,TRUE,FALSE
+Jamaica,Americas,1962,United Kingdom,,FALSE,TRUE
+Mexico,Americas,1821,Spain,,TRUE,FALSE
+Nicaragua,Americas,1821,Spain,,TRUE,FALSE
+Panama,Americas,1903,Colombia,With US support,TRUE,FALSE
+Paraguay,Americas,1811,Spain,,TRUE,FALSE
+Peru,Americas,1821,Spain,,TRUE,FALSE
+Puerto Rico,Americas,,United States,Unincorporated territory,TRUE,FALSE
+Trinidad and Tobago,Americas,1962,United Kingdom,,FALSE,TRUE
+United States,Americas,1776,United Kingdom,,TRUE,FALSE
+Uruguay,Americas,1828,Brazil,,TRUE,FALSE
+Venezuela,Americas,1811,Spain,,TRUE,FALSE
+Afghanistan,Asia,1919,United Kingdom,Third Anglo-Afghan War,TRUE,FALSE
+Australia,Asia,1901,United Kingdom,Commonwealth,TRUE,FALSE
+Bahrain,Asia,1971,United Kingdom,,FALSE,TRUE
+Bangladesh,Asia,1971,Pakistan,Liberation War,FALSE,TRUE
+Cambodia,Asia,1953,France,,FALSE,TRUE
+China,Asia,1912,None,Republic; PRC 1949,TRUE,FALSE
+"Hong Kong, China",Asia,,United Kingdom,SAR since 1997,TRUE,FALSE
+India,Asia,1947,United Kingdom,Partition,TRUE,FALSE
+Indonesia,Asia,1945,Netherlands,Proclaimed; recognised 1949,TRUE,FALSE
+Iran,Asia,1979,None,Islamic Revolution; Pahlavi era,FALSE,TRUE
+Iraq,Asia,1932,United Kingdom,League of Nations mandate ended,TRUE,FALSE
+Israel,Asia,1948,United Kingdom,British Mandate ended,TRUE,FALSE
+Japan,Asia,1952,United States,Post-WWII occupation ended,FALSE,TRUE
+Jordan,Asia,1946,United Kingdom,Formerly Transjordan,TRUE,FALSE
+"Korea, Dem. Rep.",Asia,1945,Japan,,TRUE,FALSE
+"Korea, Rep.",Asia,1945,Japan,,TRUE,FALSE
+Kuwait,Asia,1961,United Kingdom,,FALSE,TRUE
+Laos,Asia,1953,France,,FALSE,TRUE
+Lebanon,Asia,1943,France,,TRUE,FALSE
+Malaysia,Asia,1957,United Kingdom,Malayan Independence,FALSE,TRUE
+Mongolia,Asia,1921,China,Soviet-backed revolution,TRUE,FALSE
+Myanmar,Asia,1948,United Kingdom,Formerly Burma,TRUE,FALSE
+Nepal,Asia,1768,None,Never colonized; founded,TRUE,FALSE
+New Zealand,Asia,1907,United Kingdom,Dominion,TRUE,FALSE
+Oman,Asia,1951,United Kingdom,Treaty of Friendship ended,TRUE,FALSE
+Pakistan,Asia,1947,United Kingdom,Partition from India,TRUE,FALSE
+Philippines,Asia,1946,United States,,TRUE,FALSE
+Saudi Arabia,Asia,1932,None,Unification under Ibn Saud,TRUE,FALSE
+Singapore,Asia,1965,Malaysia,Expelled from Malaysia,FALSE,TRUE
+Sri Lanka,Asia,1948,United Kingdom,Formerly Ceylon,TRUE,FALSE
+Syria,Asia,1946,France,,TRUE,FALSE
+Taiwan,Asia,1949,None,ROC government relocated,TRUE,FALSE
+Thailand,Asia,1238,None,Never colonized; ancient kingdom,TRUE,FALSE
+Vietnam,Asia,1945,France,Proclaimed; war until 1954/1975,TRUE,FALSE
+West Bank and Gaza,Asia,,Israel/Jordan,Occupied territory,TRUE,FALSE
+"Yemen, Rep.",Asia,1967,United Kingdom,South Yemen; unified 1990,FALSE,TRUE
+Albania,Europe,1912,Ottoman Empire,,TRUE,FALSE
+Austria,Europe,1955,Allied Powers,State Treaty; WWII occupation ended,FALSE,TRUE
+Belgium,Europe,1830,Netherlands,Belgian Revolution,TRUE,FALSE
+Bosnia and Herzegovina,Europe,1992,Yugoslavia,Yugoslav Wars,FALSE,TRUE
+Bulgaria,Europe,1908,Ottoman Empire,,TRUE,FALSE
+Croatia,Europe,1991,Yugoslavia,,FALSE,TRUE
+Czech Republic,Europe,1993,Czechoslovakia,Velvet Divorce,FALSE,TRUE
+Denmark,Europe,1849,None,Constitutional monarchy established,TRUE,FALSE
+Finland,Europe,1917,Russia,,TRUE,FALSE
+France,Europe,1792,None,Republic proclaimed,TRUE,FALSE
+Germany,Europe,1990,None,Reunification,FALSE,TRUE
+Greece,Europe,1821,Ottoman Empire,,TRUE,FALSE
+Hungary,Europe,1918,Austria-Hungary,,TRUE,FALSE
+Iceland,Europe,1944,Denmark,,TRUE,FALSE
+Ireland,Europe,1922,United Kingdom,Irish Free State,TRUE,FALSE
+Italy,Europe,1861,None,Unification,TRUE,FALSE
+Montenegro,Europe,2006,Serbia,,FALSE,TRUE
+Netherlands,Europe,1648,Spain,Peace of Westphalia,TRUE,FALSE
+Norway,Europe,1905,Sweden,,TRUE,FALSE
+Poland,Europe,1918,Russia/Germany,,TRUE,FALSE
+Portugal,Europe,1143,None,Kingdom established,TRUE,FALSE
+Romania,Europe,1881,Ottoman Empire,,TRUE,FALSE
+Russia,Europe,1991,None,USSR dissolved,FALSE,TRUE
+Serbia,Europe,2006,Serbia+Montenegro,,FALSE,TRUE
+Slovak Republic,Europe,1993,Czechoslovakia,Velvet Divorce,FALSE,TRUE
+Slovenia,Europe,1991,Yugoslavia,,FALSE,TRUE
+Spain,Europe,1479,None,Kingdoms unified,TRUE,FALSE
+Sweden,Europe,1523,Kalmar Union,,TRUE,FALSE
+Switzerland,Europe,1291,None,Confederation founded,TRUE,FALSE
+Turkey,Europe,1923,None,Republic; successor to Ottoman,TRUE,FALSE
+United Kingdom,Europe,1707,None,Acts of Union,TRUE,FALSE
